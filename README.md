@@ -1,4 +1,4 @@
-![flight-search banner](banner.png)
+![flight-search banner](https://raw.githubusercontent.com/Olafs-World/flight-search/main/banner.png)
 
 # ✈️ flight-search
 
