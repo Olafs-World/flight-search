@@ -3,4 +3,4 @@
 from .search import search_flights, SearchResult, Flight
 
 __all__ = ["search_flights", "SearchResult", "Flight"]
-__version__ = "0.1.0"
+__version__ = "0.1.4"

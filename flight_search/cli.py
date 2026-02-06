@@ -5,6 +5,7 @@ import json
 import sys
 from typing import Optional
 
+from . import __version__
 from .search import search_flights, SearchResult
 
 
@@ -65,6 +66,7 @@ Examples:
         """,
     )
 
+    parser.add_argument("-v", "--version", action="version", version=f"%(prog)s {__version__}")
     parser.add_argument("origin", help="Origin airport code (e.g., DEN, LAX, JFK)")
     parser.add_argument("destination", help="Destination airport code")
     parser.add_argument("--date", "-d", required=True, help="Departure date (YYYY-MM-DD)")

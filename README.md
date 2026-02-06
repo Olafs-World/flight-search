@@ -48,6 +48,22 @@ pip install flight-search
 uvx flight-search DEN LAX --date 2025-03-01
 ```
 
+## Updating
+
+```bash
+# check current version
+flight-search --version
+
+# update with uv
+uv tool upgrade flight-search
+
+# or with pip
+pip install --upgrade flight-search
+
+# or with pipx
+pipx upgrade flight-search
+```
+
 ## Usage
 
 ```bash
