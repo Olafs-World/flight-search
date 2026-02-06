@@ -1,3 +1,5 @@
+![flight-search banner](banner.png)
+
 # ✈️ flight-search
 
 [![PyPI](https://img.shields.io/pypi/v/flight-search)](https://pypi.org/project/flight-search/)
