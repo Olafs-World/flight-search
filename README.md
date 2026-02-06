@@ -11,6 +11,9 @@ Built on top of [fast-flights](https://github.com/AWeirdDev/flights) - no API ke
 ## Installation
 
 ```bash
+# one-liner
+curl -fsSL https://raw.githubusercontent.com/Olafs-World/flight-search/main/install.sh | bash
+
 # using uv (recommended)
 uv tool install flight-search
 
