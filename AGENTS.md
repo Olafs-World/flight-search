@@ -43,13 +43,31 @@ tests/
 
 ## Making a Release
 
+**⚠️ NEVER manually publish to PyPI!** Always use git tags - CI handles PyPI automatically.
+
+### Release Process
+
 1. **Bump version** in `pyproject.toml`
 2. **Update CHANGELOG.md** with changes under new version header
-3. **Commit**: `git commit -am "Bump version to X.Y.Z"`
+3. **Commit**: `git add -A && git commit -m "Bump version to X.Y.Z"`
 4. **Tag**: `git tag vX.Y.Z`
-5. **Push**: `git push && git push --tags`
+5. **Push both**: `git push && git push --tags`
 
-CI will automatically publish to PyPI when the tag is pushed.
+CI will automatically:
+- Run tests on Python 3.9-3.12
+- Publish to PyPI (only on tag push)
+
+6. **Create GitHub Release** (optional but recommended):
+   - Go to Releases → Draft new release
+   - Select the tag you just pushed
+   - Copy release notes from CHANGELOG.md
+
+### Why not manual PyPI publish?
+
+- Keeps GitHub releases and PyPI versions in sync
+- Ensures tests pass before publishing
+- Creates audit trail via CI logs
+- Prevents accidental publishes of broken code
 
 ## Code Style
 
