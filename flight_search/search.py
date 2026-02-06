@@ -109,12 +109,13 @@ def search_flights(
     )
 
     # Perform search
+    # Use "common" mode (direct scraping) - "fallback" requires a token
     result = get_flights(
         flight_data=flight_data,
         trip=trip,
         seat=seat,
         passengers=passengers,
-        fetch_mode="fallback",
+        fetch_mode="common",
     )
 
     # Convert results
