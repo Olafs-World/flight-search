@@ -28,7 +28,7 @@ class TestFormatTextOutput:
             current_price="typical",
             origin="DEN",
             destination="LAX",
-            date="2025-03-01",
+            date="2026-03-01",
             return_date=None,
         )
 
@@ -36,7 +36,7 @@ class TestFormatTextOutput:
 
         assert "DEN → LAX" in output
         assert "One way" in output
-        assert "2025-03-01" in output
+        assert "2026-03-01" in output
         assert "United" in output
         assert "BEST" in output
         assert "$199" in output
@@ -48,14 +48,14 @@ class TestFormatTextOutput:
             current_price="low",
             origin="JFK",
             destination="LHR",
-            date="2025-06-15",
-            return_date="2025-06-22",
+            date="2026-06-15",
+            return_date="2026-06-22",
         )
 
         output = format_text_output(result)
 
         assert "Round trip" in output
-        assert "2025-06-15 - 2025-06-22" in output
+        assert "2026-06-15 - 2026-06-22" in output
 
     def test_format_with_stops(self):
         flight = Flight(
@@ -75,7 +75,7 @@ class TestFormatTextOutput:
             current_price=None,
             origin="LAX",
             destination="JFK",
-            date="2025-04-01",
+            date="2026-04-01",
             return_date=None,
         )
 
@@ -89,7 +89,7 @@ class TestFormatTextOutput:
             current_price=None,
             origin="ABC",
             destination="XYZ",
-            date="2025-01-01",
+            date="2026-01-01",
             return_date=None,
         )
 
@@ -115,7 +115,7 @@ class TestFormatTextOutput:
             current_price="typical",
             origin="DEN",
             destination="LAX",
-            date="2025-03-01",
+            date="2026-03-01",
             return_date=None,
         )
 
@@ -135,11 +135,11 @@ class TestCLI:
             current_price="typical",
             origin="DEN",
             destination="LAX",
-            date="2025-03-01",
+            date="2026-03-01",
             return_date=None,
         )
 
-        result = main(["DEN", "LAX", "--date", "2025-03-01"])
+        result = main(["DEN", "LAX", "--date", "2026-03-01"])
 
         assert result == 0
         mock_search.assert_called_once()
@@ -164,11 +164,11 @@ class TestCLI:
             current_price="typical",
             origin="DEN",
             destination="LAX",
-            date="2025-03-01",
+            date="2026-03-01",
             return_date=None,
         )
 
-        result = main(["DEN", "LAX", "--date", "2025-03-01", "--output", "json"])
+        result = main(["DEN", "LAX", "--date", "2026-03-01", "--output", "json"])
 
         assert result == 0
 
@@ -187,14 +187,14 @@ class TestCLI:
             current_price=None,
             origin="JFK",
             destination="LHR",
-            date="2025-06-15",
-            return_date="2025-06-22",
+            date="2026-06-15",
+            return_date="2026-06-22",
         )
 
-        main(["JFK", "LHR", "-d", "2025-06-15", "-r", "2025-06-22"])
+        main(["JFK", "LHR", "-d", "2026-06-15", "-r", "2026-06-22"])
 
         call_kwargs = mock_search.call_args[1]
-        assert call_kwargs["return_date"] == "2025-06-22"
+        assert call_kwargs["return_date"] == "2026-06-22"
 
     @patch("flight_search.cli.search_flights")
     def test_passengers_and_class(self, mock_search):
@@ -204,11 +204,11 @@ class TestCLI:
             current_price=None,
             origin="SFO",
             destination="NRT",
-            date="2025-04-01",
+            date="2026-04-01",
             return_date=None,
         )
 
-        main(["SFO", "NRT", "-d", "2025-04-01", "-a", "2", "-c", "1", "-C", "business"])
+        main(["SFO", "NRT", "-d", "2026-04-01", "-a", "2", "-c", "1", "-C", "business"])
 
         call_kwargs = mock_search.call_args[1]
         assert call_kwargs["adults"] == 2
@@ -223,11 +223,11 @@ class TestCLI:
             current_price=None,
             origin="DEN",
             destination="LAX",
-            date="2025-03-01",
+            date="2026-03-01",
             return_date=None,
         )
 
-        main(["den", "lax", "-d", "2025-03-01"])
+        main(["den", "lax", "-d", "2026-03-01"])
 
         call_kwargs = mock_search.call_args[1]
         assert call_kwargs["origin"] == "DEN"
@@ -238,7 +238,7 @@ class TestCLI:
         """Test error handling."""
         mock_search.side_effect = Exception("API Error")
 
-        result = main(["DEN", "LAX", "-d", "2025-03-01"])
+        result = main(["DEN", "LAX", "-d", "2026-03-01"])
 
         assert result == 1
 
@@ -253,11 +253,11 @@ class TestCLI:
             current_price=None,
             origin="DEN",
             destination="LAX",
-            date="2025-03-01",
+            date="2026-03-01",
             return_date=None,
         )
 
-        main(["DEN", "LAX", "-d", "2025-03-01", "-l", "5"])
+        main(["DEN", "LAX", "-d", "2026-03-01", "-l", "5"])
 
         call_kwargs = mock_search.call_args[1]
         assert call_kwargs["max_results"] == 5

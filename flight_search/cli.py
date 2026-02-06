@@ -1,10 +1,13 @@
 """CLI for searching Google Flights."""
 
 import argparse
+import io
 import json
 import shutil
 import subprocess
 import sys
+from contextlib import redirect_stdout, redirect_stderr
+from datetime import datetime
 from typing import Optional
 
 from . import __version__
@@ -122,10 +125,10 @@ def main(args: Optional[list[str]] = None) -> int:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  flight-search DEN LAX --date 2025-03-01
-  flight-search JFK LHR --date 2025-06-15 --return 2025-06-22
-  flight-search SFO NRT --date 2025-04-01 --class business --adults 2
-  flight-search ORD CDG --date 2025-05-01 --output json
+  flight-search DEN LAX --date 2026-03-01
+  flight-search JFK LHR --date 2026-06-15 --return 2026-06-22
+  flight-search SFO NRT --date 2026-04-01 --class business --adults 2
+  flight-search ORD CDG --date 2026-05-01 --output json
         """,
     )
 
@@ -164,17 +167,42 @@ Examples:
     if not parsed.date:
         parser.error("--date is required (unless using --upgrade)")
 
+    # Validate date format and ensure it's not in the past
     try:
-        result = search_flights(
-            origin=parsed.origin.upper(),
-            destination=parsed.destination.upper(),
-            date=parsed.date,
-            return_date=parsed.return_date,
-            adults=parsed.adults,
-            children=parsed.children,
-            seat_class=parsed.seat_class,
-            max_results=parsed.limit,
-        )
+        dep_date = datetime.strptime(parsed.date, "%Y-%m-%d").date()
+        today = datetime.now().date()
+        if dep_date < today:
+            print(f"Error: Departure date {parsed.date} is in the past. Use a future date.", file=sys.stderr)
+            return 1
+    except ValueError:
+        print(f"Error: Invalid date format '{parsed.date}'. Use YYYY-MM-DD.", file=sys.stderr)
+        return 1
+
+    if parsed.return_date:
+        try:
+            ret_date = datetime.strptime(parsed.return_date, "%Y-%m-%d").date()
+            if ret_date < dep_date:
+                print("Error: Return date must be after departure date.", file=sys.stderr)
+                return 1
+        except ValueError:
+            print(f"Error: Invalid return date format '{parsed.return_date}'. Use YYYY-MM-DD.", file=sys.stderr)
+            return 1
+
+    try:
+        # Suppress fast-flights' noisy output (it dumps raw page content on errors)
+        captured_out = io.StringIO()
+        captured_err = io.StringIO()
+        with redirect_stdout(captured_out), redirect_stderr(captured_err):
+            result = search_flights(
+                origin=parsed.origin.upper(),
+                destination=parsed.destination.upper(),
+                date=parsed.date,
+                return_date=parsed.return_date,
+                adults=parsed.adults,
+                children=parsed.children,
+                seat_class=parsed.seat_class,
+                max_results=parsed.limit,
+            )
 
         if parsed.output == "json":
             print(json.dumps(result.to_dict(), indent=2))
@@ -184,10 +212,16 @@ Examples:
         return 0
 
     except Exception as err:
+        # Clean up error message - fast-flights can include page garbage
+        err_str = str(err)
+        # If error is too long or contains HTML-like content, simplify it
+        if len(err_str) > 200 or "Skip to main content" in err_str or "<" in err_str:
+            err_str = "No flights found. Check your airports and dates."
+
         if parsed.output == "json":
-            print(json.dumps({"error": str(err)}), file=sys.stderr)
+            print(json.dumps({"error": err_str}), file=sys.stderr)
         else:
-            print(f"Error: {err}", file=sys.stderr)
+            print(f"Error: {err_str}", file=sys.stderr)
         return 1
 
 

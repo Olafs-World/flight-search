@@ -32,11 +32,11 @@ Built on [fast-flights](https://github.com/AWeirdDev/flights).
 
 ```bash
 # one-off search (no install needed)
-uvx flight-search DEN LAX --date 2025-03-01
+uvx flight-search DEN LAX --date 2026-03-01
 
 # or install globally
 uv tool install flight-search
-flight-search JFK LHR --date 2025-06-15 --return 2025-06-22
+flight-search JFK LHR --date 2026-06-15 --return 2026-06-22
 ```
 
 ## Options
@@ -60,23 +60,23 @@ options:
 
 ```bash
 # One-way flight
-flight-search DEN LAX --date 2025-03-01
+flight-search DEN LAX --date 2026-03-01
 
 # Round trip with passengers
-flight-search JFK LHR --date 2025-06-15 --return 2025-06-22 --adults 2
+flight-search JFK LHR --date 2026-06-15 --return 2026-06-22 --adults 2
 
 # Business class
-flight-search SFO NRT --date 2025-04-01 --class business
+flight-search SFO NRT --date 2026-04-01 --class business
 
 # JSON output for parsing
-flight-search ORD CDG --date 2025-05-01 --output json
+flight-search ORD CDG --date 2026-05-01 --output json
 ```
 
 ## Example Output
 
 ```
 ✈️  DEN → LAX
-   One way · 2025-03-01
+   One way · 2026-03-01
    Prices are currently: typical
 
 ──────────────────────────────────────────────────
@@ -102,7 +102,7 @@ Returns structured data:
 {
   "origin": "DEN",
   "destination": "LAX",
-  "date": "2025-03-01",
+  "date": "2026-03-01",
   "current_price": "typical",
   "flights": [
     {
