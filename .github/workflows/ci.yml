@@ -51,3 +51,15 @@ jobs:
           UV_PUBLISH_TOKEN: ${{ secrets.PYPI_TOKEN }}
         run: uv publish --token $UV_PUBLISH_TOKEN
         continue-on-error: true  # Don't fail if version already exists
+
+      - name: Install ClawHub CLI
+        run: npm install -g clawhub
+
+      - name: Publish to ClawHub
+        env:
+          CLAWHUB_TOKEN: ${{ secrets.CLAWHUB_TOKEN }}
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          clawhub login --token "$CLAWHUB_TOKEN" --no-browser
+          clawhub publish . --slug flight-search --name "Flight Search" --version "$VERSION" --changelog "Release $VERSION"
+        continue-on-error: true  # Don't fail if version already exists
