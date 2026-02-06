@@ -8,6 +8,28 @@
 
 CLI tool to search Google Flights. Get prices, times, and airlines from the command line.
 
+```bash
+$ flight-search DEN LAX --date 2025-03-01
+
+✈️  DEN → LAX
+   One way · 2025-03-01
+   Prices are currently: typical
+
+──────────────────────────────────────────────────
+   Frontier ⭐ BEST
+   🕐 10:43 PM → 12:30 AM +1
+   ⏱️  2 hr 47 min
+   ✅ Nonstop
+   💰 $84
+
+──────────────────────────────────────────────────
+   United ⭐ BEST
+   🕐 5:33 PM → 7:13 PM
+   ⏱️  2 hr 40 min
+   ✅ Nonstop
+   💰 $139
+```
+
 Built on top of [fast-flights](https://github.com/AWeirdDev/flights) - no API key required.
 
 ## Installation
@@ -38,7 +60,7 @@ flight-search JFK LHR --date 2025-06-15 --return 2025-06-22
 # Multiple passengers, business class
 flight-search SFO NRT --date 2025-04-01 --class business --adults 2
 
-# JSON output
+# JSON output for scripts
 flight-search ORD CDG --date 2025-05-01 --output json
 ```
 
@@ -57,28 +79,6 @@ options:
   --class, -C           Seat class: economy, premium-economy, business, first
   --limit, -l           Max results (default: 10)
   --output, -o          Output format: text or json (default: text)
-```
-
-## Example Output
-
-```
-✈️  DEN → LAX
-   One way · 2025-03-01
-   Prices are currently: typical
-
-──────────────────────────────────────────────────
-   Frontier ⭐ BEST
-   🕐 10:43 PM → 12:30 AM +1
-   ⏱️  2 hr 47 min
-   ✅ Nonstop
-   💰 $84
-
-──────────────────────────────────────────────────
-   United ⭐ BEST
-   🕐 5:33 PM → 7:13 PM
-   ⏱️  2 hr 40 min
-   ✅ Nonstop
-   💰 $139
 ```
 
 ## JSON Output
@@ -107,6 +107,22 @@ flight-search DEN LAX --date 2025-03-01 --output json
   ]
 }
 ```
+
+## Troubleshooting
+
+### "401 no token provided" error
+
+This can happen when the underlying library's fallback request method fails. Workarounds:
+
+1. **Try again** - Sometimes transient
+2. **Use from a different network** - Some networks/regions have issues
+3. **Install Playwright** for local browser mode:
+   ```bash
+   pip install playwright
+   playwright install chromium
+   ```
+
+The library scrapes Google Flights directly. It doesn't require an API key, but Google's anti-bot measures can sometimes block requests.
 
 ## Python API
 
