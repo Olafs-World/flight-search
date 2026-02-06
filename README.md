@@ -163,3 +163,10 @@ for flight in result.flights:
 - [PyPI](https://pypi.org/project/flight-search/)
 - [ClawHub Skill](https://clawhub.com/skills/flight-search)
 - [fast-flights](https://github.com/AWeirdDev/flights) (underlying library)
+
+## Self-Update
+
+```bash
+# Auto-detects how you installed it (uv/pipx/pip) and upgrades
+flight-search --upgrade
+```

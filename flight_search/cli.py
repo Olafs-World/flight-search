@@ -2,11 +2,75 @@
 
 import argparse
 import json
+import os
+import shutil
+import subprocess
 import sys
 from typing import Optional
 
 from . import __version__
 from .search import search_flights, SearchResult
+
+
+def detect_installer() -> str:
+    """Detect how flight-search was installed."""
+    exe_path = shutil.which("flight-search") or sys.executable
+    
+    # Check for uv tool installation (typically ~/.local/bin or has uv in path)
+    if shutil.which("uv"):
+        # Check if uv knows about this tool
+        try:
+            result = subprocess.run(
+                ["uv", "tool", "list"],
+                capture_output=True,
+                text=True,
+                timeout=5
+            )
+            if "flight-search" in result.stdout:
+                return "uv"
+        except Exception:
+            pass
+    
+    # Check for pipx installation
+    if shutil.which("pipx"):
+        try:
+            result = subprocess.run(
+                ["pipx", "list"],
+                capture_output=True,
+                text=True,
+                timeout=5
+            )
+            if "flight-search" in result.stdout:
+                return "pipx"
+        except Exception:
+            pass
+    
+    # Default to pip
+    return "pip"
+
+
+def do_upgrade() -> int:
+    """Upgrade flight-search using the detected installer."""
+    installer = detect_installer()
+    
+    print(f"Detected installer: {installer}")
+    print(f"Current version: {__version__}")
+    print("Upgrading...")
+    
+    if installer == "uv":
+        cmd = ["uv", "tool", "upgrade", "flight-search"]
+    elif installer == "pipx":
+        cmd = ["pipx", "upgrade", "flight-search"]
+    else:
+        cmd = [sys.executable, "-m", "pip", "install", "--upgrade", "flight-search"]
+    
+    try:
+        result = subprocess.run(cmd, check=True)
+        print("\n✅ Upgrade complete! Run 'flight-search --version' to verify.")
+        return 0
+    except subprocess.CalledProcessError as e:
+        print(f"\n❌ Upgrade failed: {e}", file=sys.stderr)
+        return 1
 
 
 def format_text_output(result: SearchResult) -> str:
@@ -67,9 +131,10 @@ Examples:
     )
 
     parser.add_argument("-v", "--version", action="version", version=f"%(prog)s {__version__}")
-    parser.add_argument("origin", help="Origin airport code (e.g., DEN, LAX, JFK)")
-    parser.add_argument("destination", help="Destination airport code")
-    parser.add_argument("--date", "-d", required=True, help="Departure date (YYYY-MM-DD)")
+    parser.add_argument("--upgrade", action="store_true", help="Upgrade flight-search to latest version")
+    parser.add_argument("origin", nargs="?", help="Origin airport code (e.g., DEN, LAX, JFK)")
+    parser.add_argument("destination", nargs="?", help="Destination airport code")
+    parser.add_argument("--date", "-d", help="Departure date (YYYY-MM-DD)")
     parser.add_argument("--return", "-r", dest="return_date", help="Return date for round trips (YYYY-MM-DD)")
     parser.add_argument("--adults", "-a", type=int, default=1, help="Number of adults (default: 1)")
     parser.add_argument("--children", "-c", type=int, default=0, help="Number of children (default: 0)")
@@ -89,6 +154,16 @@ Examples:
     )
 
     parsed = parser.parse_args(args)
+
+    # Handle --upgrade
+    if parsed.upgrade:
+        return do_upgrade()
+
+    # Validate required args for search
+    if not parsed.origin or not parsed.destination:
+        parser.error("origin and destination are required (unless using --upgrade)")
+    if not parsed.date:
+        parser.error("--date is required (unless using --upgrade)")
 
     try:
         result = search_flights(
