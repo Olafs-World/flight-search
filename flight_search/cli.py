@@ -2,7 +2,6 @@
 
 import argparse
 import json
-import os
 import shutil
 import subprocess
 import sys
@@ -14,8 +13,8 @@ from .search import search_flights, SearchResult
 
 def detect_installer() -> str:
     """Detect how flight-search was installed."""
-    exe_path = shutil.which("flight-search") or sys.executable
-    
+    shutil.which("flight-search") or sys.executable
+
     # Check for uv tool installation (typically ~/.local/bin or has uv in path)
     if shutil.which("uv"):
         # Check if uv knows about this tool
@@ -30,7 +29,7 @@ def detect_installer() -> str:
                 return "uv"
         except Exception:
             pass
-    
+
     # Check for pipx installation
     if shutil.which("pipx"):
         try:
@@ -44,7 +43,7 @@ def detect_installer() -> str:
                 return "pipx"
         except Exception:
             pass
-    
+
     # Default to pip
     return "pip"
 
@@ -52,20 +51,20 @@ def detect_installer() -> str:
 def do_upgrade() -> int:
     """Upgrade flight-search using the detected installer."""
     installer = detect_installer()
-    
+
     print(f"Detected installer: {installer}")
     print(f"Current version: {__version__}")
     print("Upgrading...")
-    
+
     if installer == "uv":
         cmd = ["uv", "tool", "upgrade", "flight-search"]
     elif installer == "pipx":
         cmd = ["pipx", "upgrade", "flight-search"]
     else:
         cmd = [sys.executable, "-m", "pip", "install", "--upgrade", "flight-search"]
-    
+
     try:
-        result = subprocess.run(cmd, check=True)
+        subprocess.run(cmd, check=True)
         print("\n✅ Upgrade complete! Run 'flight-search --version' to verify.")
         return 0
     except subprocess.CalledProcessError as e:
