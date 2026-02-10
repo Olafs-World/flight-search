@@ -1,10 +1,11 @@
 ![flight-search banner](https://raw.githubusercontent.com/Olafs-World/flight-search/main/banner.png)
 
-# ✈️ flight-search
+[![CI](https://github.com/Olafs-World/flight-search/actions/workflows/ci.yml/badge.svg)](https://github.com/Olafs-World/flight-search/actions/workflows/ci.yml)
+[![PyPI version](https://badge.fury.io/py/flight-search.svg)](https://pypi.org/project/flight-search/)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-[![PyPI](https://img.shields.io/pypi/v/flight-search)](https://pypi.org/project/flight-search/)
-[![Python](https://img.shields.io/pypi/pyversions/flight-search)](https://pypi.org/project/flight-search/)
-[![License](https://img.shields.io/pypi/l/flight-search)](https://github.com/Olafs-World/flight-search/blob/main/LICENSE)
+# ✈️ flight-search
 
 CLI tool to search Google Flights. Get prices, times, and airlines from the command line.
 
