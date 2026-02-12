@@ -49,6 +49,15 @@ pip install flight-search
 uvx flight-search DEN LAX --date 2026-03-01
 ```
 
+### As an Agent Skill
+
+```bash
+npx skills add olafs-world/flight-search
+
+# or with OpenClaw
+clawhub install olafs-world/flight-search
+```
+
 ## Updating
 
 ```bash
